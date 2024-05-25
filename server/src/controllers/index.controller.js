@@ -13,11 +13,11 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name } = req.body;
 
     const { rows } = await pool.query(
-      "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-      [name, email]
+      "INSERT INTO users (name) VALUES ($1) RETURNING *",
+      [name]
     );
 
     res.status(201).json(rows[0]);
@@ -28,11 +28,11 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, email } = req.body;
+  const { name} = req.body;
 
   const { rows } = await pool.query(
     "UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *",
-    [name, email, id]
+    [name, id]
   );
 
   return res.json(rows[0]);

@@ -1,8 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Home() {
 
-  const [items, setItems] = useState([])
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data)
+        console.log(data)
+      }
+      )
+      .catch(error => console.error(error));
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -17,23 +28,38 @@ function Home() {
     input.value = ''
   }
 
-  const addItem = (text) => {
-    const newItem = {
-      id: crypto.randomUUID(),
-      text,
-      timestamp: Date.now()
+  const addItem = async (name) => {
+    const newUser = {
+      id: users.length + 1,
+      name,
+      date: new Date().toISOString()
     }
 
-    setItems((prevItems) => {
-      return [...prevItems, newItem]
-    })
+    try {
+      const response = await fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser)
+      });
+
+      const createdUser = await response.json();
+      setUsers([...users, createdUser]);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  const removeItem = (id) => {
-    setItems((prevItems) => {
-      return prevItems.filter((item) => item.id !== id)
-    })
-  }
+  const removeItem = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/users/${id}`, {
+        method: 'DELETE'
+      });
+
+      setUsers(users.filter(user => user.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const createHandleRemoveItem = (id) => () => {
     removeItem(id)
@@ -46,7 +72,7 @@ function Home() {
         <aside className="container_left">
           <h2 className="subtitle">Input</h2>
           <form className='form_container' onSubmit={handleSubmit} aria-label='Añadir elementos a la lista'>
-            <label for="item" className='form_label'>
+            <label htmlFor="item" className='form_label'>
               Elemento a introducir:
             </label>
             <input
@@ -64,21 +90,19 @@ function Home() {
         <aside className="container_right">
           <h2 className="subtitle">List</h2>
           {
-            items.length === 0 ? (
+            users.length === 0 ? (
               <p className='list_zero-items'>
                 <strong>No hay elementos en la lista.</strong>
               </p>
             ) : (
               <ul className='list'>
                 {
-                  items.map((item) => {
-                    return (
-                      <li className="item_container" key={item.id}>
-                        <p className='item_name'>{item.text}</p>
-                        <button className='item_button' onClick={createHandleRemoveItem(item.id)}>x</button>
-                      </li>
-                    )
-                  })
+                  users.map((user) => (
+                    <li className="item_container" key={user.id}>
+                      <p className='item_name'>{user.name}</p>
+                      <button className='item_button' onClick={createHandleRemoveItem(user.id)}>x</button>
+                    </li>
+                  ))
                 }
               </ul>
             )
