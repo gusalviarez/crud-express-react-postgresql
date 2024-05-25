@@ -1,9 +1,3 @@
--- CREATE DATABASE firstapi;
-
--- \l
-
--- \c firstapi;
-
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -12,7 +6,7 @@ CREATE TABLE users (
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-INSERT INTO users (name, email)
+INSERT INTO users (name)
     VALUES ('joe'),
     ('ryan');
 

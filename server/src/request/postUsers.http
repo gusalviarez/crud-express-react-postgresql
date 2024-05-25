@@ -1,0 +1,7 @@
+### The first request
+
+GET http://localhost:3000/users
+Authorization: Bearer null
+Content-Type: application/json
+
+
