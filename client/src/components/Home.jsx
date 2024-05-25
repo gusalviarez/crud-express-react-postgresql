@@ -65,17 +65,17 @@ function Home() {
           <h2 className="subtitle">List</h2>
           {
             items.length === 0 ? (
-              <p>
+              <p className='list_zero-items'>
                 <strong>No hay elementos en la lista.</strong>
               </p>
             ) : (
-              <ul>
+              <ul className='list'>
                 {
                   items.map((item) => {
                     return (
-                      <li key={item.id}>
-                        <p>{item.text}</p>
-                        <button onClick={createHandleRemoveItem(item.id)}>delete</button>
+                      <li className="item_container" key={item.id}>
+                        <p className='item_name'>{item.text}</p>
+                        <button className='item_button' onClick={createHandleRemoveItem(item.id)}>x</button>
                       </li>
                     )
                   })
