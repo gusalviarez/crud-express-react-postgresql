@@ -30,9 +30,7 @@ function Home() {
 
   const addItem = async (name) => {
     const newUser = {
-      id: users.length + 1,
       name,
-      date: new Date().toISOString()
     }
 
     try {
